@@ -8,6 +8,6 @@ scripts = Script()
 class HomePageView(FormView):
     form_class = ToolsForm
     template_name = 'tools/home.html'
-    scripts.run()
     success_url = reverse_lazy('home')
+    scripts.run()
     

@@ -1,4 +1,4 @@
-import smtplib
+import smtplib, ssl
 from email.mime.text import MIMEText
 from tools.forms import ToolsForm
 
@@ -20,6 +20,7 @@ class Script(ToolsForm):
         s_receiver = str(ToolsForm.declared_fields['receiver_input'])
         s_subject = str(ToolsForm.declared_fields['subject'])
         sbody = str(ToolsForm.declared_fields['body'])
+        s_password_user = str(ToolsForm.declared_fields['password_user'])
 
         # Saving Form content to a file
         saveBodyFile = open('bodytext.txt', "w")
@@ -39,7 +40,7 @@ class Script(ToolsForm):
         receiver_list = text_content.readlines()
         text_content.close()
         for user in receiver_list:
-            sender = self.sender_input
+            sender = s_sender
             receivers = user
             body_of_email = body_content
             msg = MIMEText(body_of_email, "html")
@@ -47,16 +48,19 @@ class Script(ToolsForm):
             msg['From'] = sender
             msg['To'] = user
 
+            # Create a secure SSL Certificate
+            context = ssl.create_default_context()
+
             try:
-                s = smtplib.SMTP_SSL(host='smtp.gmail.com', port=465)
-                s.login(user=sender, password=self.password_user)
+                s = smtplib.SMTP_SSL(host='smtp.gmail.com', port=465, context=context)
+                s.login(user=sender, password=s_password_user)
                 s.sendmail(sender, receivers, msg.as_string())
                 s.quit()
                 print("Sent to {}".format(user))
             except smtplib.SMTPException:
                 continue
 
-        print("Ran Successful")
+        print("Script is running smoothly")
 
 
 
