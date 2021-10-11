@@ -11,16 +11,31 @@ class Script(ToolsForm):
         self.sender_input = sender_input
         self.receiver_input = receiver_input
         self.subject = subject
-        self.body = str(body)
+        self.body = body
         self.password_user = password_user
-    
 
     def run(self):
-        body_txt = open(self.body, "r")
+        # Converting fields to str format
+        s_sender = str(ToolsForm.declared_fields['sender_input'])
+        s_receiver = str(ToolsForm.declared_fields['receiver_input'])
+        s_subject = str(ToolsForm.declared_fields['subject'])
+        sbody = str(ToolsForm.declared_fields['body'])
+
+        # Saving Form content to a file
+        saveBodyFile = open('bodytext.txt', "w")
+        saveBodyFile.write(sbody)
+        saveBodyFile.close()
+
+        saveRecieverInput = open('content.txt', "w")
+        saveRecieverInput.write(s_receiver)
+        saveRecieverInput.close()
+
+        # Carries out the remain tasks
+        body_txt = open('bodytext.txt', "r")
         body_content = body_txt.read()
         body_txt.close()
 
-        text_content = open(self.receiver_input, "r")
+        text_content = open('content.txt', "r")
         receiver_list = text_content.readlines()
         text_content.close()
         for user in receiver_list:
